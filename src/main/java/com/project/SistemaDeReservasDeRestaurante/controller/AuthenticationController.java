@@ -21,7 +21,7 @@ import com.project.SistemaDeReservasDeRestaurante.infra.security.TokenService;
 import com.project.SistemaDeReservasDeRestaurante.repository.UserRepository;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class AuthenticationController {
   @Autowired
   private AuthenticationManager authenticationManager;
