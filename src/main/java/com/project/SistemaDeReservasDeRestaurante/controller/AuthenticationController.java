@@ -1,0 +1,51 @@
+package com.project.SistemaDeReservasDeRestaurante.controller;
+
+import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.project.SistemaDeReservasDeRestaurante.domain.user.User;
+import com.project.SistemaDeReservasDeRestaurante.dto.ErrorResponseDTO;
+import com.project.SistemaDeReservasDeRestaurante.dto.user.AuthenticationDTO;
+import com.project.SistemaDeReservasDeRestaurante.dto.user.RegisterDTO;
+import com.project.SistemaDeReservasDeRestaurante.repository.UserRepository;
+
+@RestController
+@RequestMapping("/user")
+public class AuthenticationController {
+  @Autowired
+  private AuthenticationManager authenticationManager;
+  
+  @Autowired
+  private UserRepository userRepository;
+
+  @PostMapping("/register")
+  public ResponseEntity register(@RequestBody @Valid RegisterDTO data) {
+    if(userRepository.findByEmail(data.email()) != null) {
+      return ResponseEntity.badRequest().body(new ErrorResponseDTO("Email já cadastrado."));
+    }
+    
+    String encrpytedPassword = new BCryptPasswordEncoder().encode(data.password());
+    User newUser = new User(data.name(), data.email(), encrpytedPassword);
+
+    userRepository.save(newUser);
+
+    return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/login")
+  public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
+    var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
+    var auth = authenticationManager.authenticate(usernamePassword);
+    
+    return ResponseEntity.ok().build();
+  }
+}
