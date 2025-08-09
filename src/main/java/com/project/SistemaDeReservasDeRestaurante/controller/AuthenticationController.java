@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.SistemaDeReservasDeRestaurante.domain.user.User;
 import com.project.SistemaDeReservasDeRestaurante.dto.ErrorResponseDTO;
 import com.project.SistemaDeReservasDeRestaurante.dto.user.AuthenticationDTO;
+import com.project.SistemaDeReservasDeRestaurante.dto.user.LoginResponseDTO;
 import com.project.SistemaDeReservasDeRestaurante.dto.user.RegisterDTO;
+import com.project.SistemaDeReservasDeRestaurante.infra.security.TokenService;
 import com.project.SistemaDeReservasDeRestaurante.repository.UserRepository;
 
 @RestController
@@ -26,6 +28,9 @@ public class AuthenticationController {
   
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private TokenService tokenService;
 
   @PostMapping("/register")
   public ResponseEntity register(@RequestBody @Valid RegisterDTO data) {
@@ -45,7 +50,7 @@ public class AuthenticationController {
   public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
     var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
     var auth = authenticationManager.authenticate(usernamePassword);
-    
-    return ResponseEntity.ok().build();
+    var token = tokenService.generateToken((User) auth.getPrincipal());
+    return ResponseEntity.ok(new LoginResponseDTO(token));
   }
 }
