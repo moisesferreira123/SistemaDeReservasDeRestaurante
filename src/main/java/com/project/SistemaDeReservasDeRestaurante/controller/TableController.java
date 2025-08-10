@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.SistemaDeReservasDeRestaurante.dto.table.TableCreationDTO;
 import com.project.SistemaDeReservasDeRestaurante.dto.table.TableDTO;
+import com.project.SistemaDeReservasDeRestaurante.dto.table.TableStatusDTO;
 import com.project.SistemaDeReservasDeRestaurante.dto.table.TableUpdateDTO;
 import com.project.SistemaDeReservasDeRestaurante.service.TableService;
 
@@ -40,6 +42,11 @@ public class TableController {
   @PutMapping("/{tableId}")
   public void updateTable(@RequestBody TableUpdateDTO tableUpdateDTO, @PathVariable Long tableId) {
     tableService.updateTable(tableUpdateDTO, tableId);
+  }
+
+  @PatchMapping("/{tableId}")
+  public void updateStatus(@RequestBody TableStatusDTO tableStatus, @PathVariable Long tableId) {
+    tableService.updateStatus(tableStatus, tableId);
   }
 
   @DeleteMapping("/{tableId}")

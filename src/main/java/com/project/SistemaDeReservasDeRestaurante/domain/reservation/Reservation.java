@@ -30,6 +30,8 @@ public class Reservation {
 
   private LocalDateTime bookingDate;
 
+  private Long numberOfGuests;
+
   private ReservationStatus status;
 
   @ManyToOne
