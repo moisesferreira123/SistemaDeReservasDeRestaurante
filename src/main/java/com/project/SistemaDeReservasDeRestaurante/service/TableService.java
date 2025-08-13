@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.project.SistemaDeReservasDeRestaurante.domain.table.Tables;
 import com.project.SistemaDeReservasDeRestaurante.dto.table.TableCreationDTO;
-import com.project.SistemaDeReservasDeRestaurante.dto.table.TableStatusDTO;
 import com.project.SistemaDeReservasDeRestaurante.dto.table.TableUpdateDTO;
 import com.project.SistemaDeReservasDeRestaurante.repository.TableRepository;
 
@@ -45,21 +44,18 @@ public class TableService {
       throw new RuntimeException("Capacidade inválida");
     }
 
+    if(tableUpdateDTO.status() == null) {
+      throw new RuntimeException("Status inválido");
+    }
+
     table.setName(tableUpdateDTO.name());
     table.setCapacity(tableUpdateDTO.capacity());
-    
+    table.setStatus(tableUpdateDTO.status());
+
     tableRepository.save(table);
   }
 
-  public void updateStatus(TableStatusDTO tableStatus, Long tableId) {
-    Tables table = tableRepository.findById(tableId).orElseThrow(() -> new RuntimeException("Mesa não encontrada"));
-
-    if(tableStatus.status() == null) {
-      throw new RuntimeException("Status inválida");
-    }
-
-    table.setStatus(tableStatus.status());
-
+  public void updateTable(Tables table) {
     tableRepository.save(table);
   }
 

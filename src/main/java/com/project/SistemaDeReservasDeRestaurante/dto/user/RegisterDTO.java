@@ -1,5 +1,7 @@
 package com.project.SistemaDeReservasDeRestaurante.dto.user;
 
-public record RegisterDTO(String name, String email, String password) {
+import jakarta.validation.constraints.Email;
+
+public record RegisterDTO(String name, @Email(message = "Formato de e-mail inválido") String email, String password) {
   
 }
