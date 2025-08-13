@@ -15,6 +15,8 @@ import com.project.SistemaDeReservasDeRestaurante.domain.user.User;
 import com.project.SistemaDeReservasDeRestaurante.dto.reservation.ReservationCreationDTO;
 import com.project.SistemaDeReservasDeRestaurante.repository.ReservationRepository;
 
+import jakarta.validation.Valid;
+
 @Service
 public class ReservationService {
   @Autowired
@@ -30,17 +32,9 @@ public class ReservationService {
     return reservationRepository.findAll();
   }
 
-  public void createReservation(ReservationCreationDTO reservationCreationDTO) {
+  public void createReservation(@Valid ReservationCreationDTO reservationCreationDTO) {
     User user = userService.getUserById(reservationCreationDTO.userId());
     Tables table = tableService.getTableById(reservationCreationDTO.tableId());
-    
-    if(reservationCreationDTO.bookingDate() == null) {
-      throw new RuntimeException("Data de reserva inválida");
-    }
-
-    if(reservationCreationDTO.numberOfGuests() == null) {
-      throw new RuntimeException("Número de pessoas inválido");
-    }
 
     if(reservationCreationDTO.numberOfGuests() > table.getCapacity()) {
       throw new RuntimeException("A mesa escolhida não tem capacidade para " + reservationCreationDTO.numberOfGuests() +
@@ -82,10 +76,11 @@ public class ReservationService {
   public void cancelReservation(Long reservationId) {
     Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new RuntimeException("Reserva não encontrada"));
     if(reservation.getStatus() != ReservationStatus.ACTIVE) {
-      throw new RuntimeException("Reserva não pode ser cancelada, pois já está ativa");
+      throw new RuntimeException("Reserva não pode ser cancelada, pois já está inativa");
     }
     Tables table = tableService.getTableById(reservation.getTable().getId());
     reservation.setStatus(ReservationStatus.CANCELED);
+    table.setStatus(TableStatus.AVAILABLE);
     reservationRepository.save(reservation);
     tableService.updateTable(table);
   }

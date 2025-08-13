@@ -16,6 +16,8 @@ import com.project.SistemaDeReservasDeRestaurante.dto.reservation.ReservationCre
 import com.project.SistemaDeReservasDeRestaurante.dto.reservation.ReservationDTO;
 import com.project.SistemaDeReservasDeRestaurante.service.ReservationService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
@@ -31,7 +33,7 @@ public class ReservationController {
   }
 
   @PostMapping
-  public void createReservation(@RequestBody ReservationCreationDTO reservationCreationDTO) {
+  public void createReservation(@RequestBody @Valid ReservationCreationDTO reservationCreationDTO) {
     reservationService.createReservation(reservationCreationDTO);
   }
 

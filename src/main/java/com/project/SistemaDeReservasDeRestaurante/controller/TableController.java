@@ -18,6 +18,8 @@ import com.project.SistemaDeReservasDeRestaurante.dto.table.TableDTO;
 import com.project.SistemaDeReservasDeRestaurante.dto.table.TableUpdateDTO;
 import com.project.SistemaDeReservasDeRestaurante.service.TableService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/tables")
 public class TableController {
@@ -33,12 +35,12 @@ public class TableController {
   }
 
   @PostMapping
-  public void createTable(@RequestBody TableCreationDTO tableCreationDTO) {
+  public void createTable(@RequestBody @Valid TableCreationDTO tableCreationDTO) {
     tableService.createTable(tableCreationDTO);
   }
 
   @PutMapping("/{tableId}")
-  public void updateTable(@RequestBody TableUpdateDTO tableUpdateDTO, @PathVariable Long tableId) {
+  public void updateTable(@RequestBody @Valid TableUpdateDTO tableUpdateDTO, @PathVariable Long tableId) {
     tableService.updateTable(tableUpdateDTO, tableId);
   }
 

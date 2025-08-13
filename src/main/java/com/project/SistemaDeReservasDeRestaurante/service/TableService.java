@@ -10,6 +10,8 @@ import com.project.SistemaDeReservasDeRestaurante.dto.table.TableCreationDTO;
 import com.project.SistemaDeReservasDeRestaurante.dto.table.TableUpdateDTO;
 import com.project.SistemaDeReservasDeRestaurante.repository.TableRepository;
 
+import jakarta.validation.Valid;
+
 @Service
 public class TableService {
   @Autowired
@@ -19,34 +21,13 @@ public class TableService {
     return tableRepository.findAll();
   }
 
-  public void createTable(TableCreationDTO tableDTO) {
-    if(tableDTO.name() == null || tableDTO.name().trim().isEmpty()) {
-      throw new RuntimeException("Nome de mesa inválido");
-    }
-
-    if(tableDTO.capacity() == null) {
-      throw new RuntimeException("Capacidade inválida");
-    }
-
+  public void createTable(@Valid TableCreationDTO tableDTO) {
     Tables newTable = new Tables(tableDTO.name(), tableDTO.capacity());
-
     tableRepository.save(newTable);
   }
 
-  public void updateTable(TableUpdateDTO tableUpdateDTO, Long tableId) {
+  public void updateTable(@Valid TableUpdateDTO tableUpdateDTO, Long tableId) {
     Tables table = tableRepository.findById(tableId).orElseThrow(() -> new RuntimeException("Mesa não encontrada"));
-    
-    if(tableUpdateDTO.name() == null || tableUpdateDTO.name().trim().isEmpty()) {
-      throw new RuntimeException("Nome de mesa inválido");
-    }
-
-    if(tableUpdateDTO.capacity() == null) {
-      throw new RuntimeException("Capacidade inválida");
-    }
-
-    if(tableUpdateDTO.status() == null) {
-      throw new RuntimeException("Status inválido");
-    }
 
     table.setName(tableUpdateDTO.name());
     table.setCapacity(tableUpdateDTO.capacity());
@@ -61,7 +42,6 @@ public class TableService {
 
   public void deleteTable(Long tableId) {
     Tables table = tableRepository.findById(tableId).orElseThrow(() -> new RuntimeException("Mesa não encontrada"));
-
     tableRepository.delete(table);
   }
 
